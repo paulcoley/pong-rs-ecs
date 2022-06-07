@@ -1,4 +1,4 @@
-use crate::GAME_STATE;
+use crate::{GAME_STATE, PLAY};
 use crate::componentmanager::ComponentManager;
 use crate::fontmanager::FontManager;
 use crate::gamestate::GameStates;
@@ -46,6 +46,12 @@ pub fn get_allocated_ids(cmanage: &CManagerRc) -> Vec<usize> {
 pub fn change_gamestate(new_state: GameStates) {
     unsafe {
         GAME_STATE = new_state;
+    }
+}
+
+pub fn set_play(play: bool) {
+    unsafe {
+        PLAY = play;
     }
 }
 

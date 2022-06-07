@@ -23,6 +23,7 @@ use std::time::{Instant, Duration};
 use util::{EventRunner, PlayRc, EventRc};
 
 static mut GAME_STATE: GameStates = GameStates::MainMenu;
+static mut PLAY: bool = false;
 
 pub fn main() {
     // Base SDL2 bind classes
@@ -38,14 +39,15 @@ pub fn main() {
         event_pump: sdl_context.event_pump().unwrap(),
         event_list: Vec::new()
     });
-    let play: PlayRc = util::rcf(true);
     let mut now = Instant::now();
 
-    let pong_state = PongState::new(&canvas, &event_runner, &font_manager, &play);
-    let menu_state = MainMenuState::new(&canvas, &event_runner, &font_manager, &play);
+    let pong_state = PongState::new(&canvas, &event_runner, &font_manager);
+    let menu_state = MainMenuState::new(&canvas, &event_runner, &font_manager);
 
     game_states.insert(GameStates::Pong, Box::new(pong_state));
     game_states.insert(GameStates::MainMenu, Box::new(menu_state));
+
+    util::set_play(true);
 
     'running: loop {
         // Sleep for 1/60th of a second, in nanoseconds
@@ -62,8 +64,10 @@ pub fn main() {
         if let Some(state) = game_states.get_mut(&state_key) {
             event_runner.borrow_mut().refresh();
 
-            if !(*play.borrow()) {
-                break 'running;
+            unsafe {
+                if !(PLAY) {
+                    break 'running;
+                }
             }
 
             canvas.borrow_mut().set_draw_color(Color::RGB(0, 0, 0));

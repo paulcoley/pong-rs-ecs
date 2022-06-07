@@ -43,7 +43,7 @@ pub fn create(
         id,
         name: name.to_string(),
         text: text.to_string(),
-        size: 72,
+        size: 28,
         offset: Point::new(0, 0),
         color: Color::BLACK
     };

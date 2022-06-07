@@ -63,7 +63,7 @@ impl<'ttf> SysRenderText<'ttf> {
         let cmanager = &*self.cmanager.borrow();
         if let Some(text) = cmanager.ctext.get(id) {
             if let Some(position) = cmanager.cposition_2d.get(id) {
-                self.font_manager.borrow_mut().render_text(&text.text, position.pos, "arial", 36, &self.canvas, Color::BLACK);
+                self.font_manager.borrow_mut().render_text(&text.text, position.pos, "arial", text.size as u16, &self.canvas, Color::BLACK);
             }
         }
     }
@@ -304,11 +304,20 @@ impl<'ttf> SysScoring<'ttf> {
 
         let mut font_manager = self.font_manager.borrow_mut();
         let font = "arial";
-        let pos_p1 = Point::new(540, 100);
-        let pos_p2 = Point::new(740, 100);
 
-        font_manager.render_text(&self.score_p1.to_string(), pos_p1, font, 144, &self.canvas, Color::WHITE);
-        font_manager.render_text(&self.score_p2.to_string(), pos_p2, font, 144, &self.canvas, Color::WHITE);
+        if self.score_p1 >= 5 {
+            font_manager.render_text("Player 1 Wins", Point::new(640, 360), font, 144, &self.canvas, Color::WHITE);
+        }
+        else if self.score_p2 >= 5 {
+            font_manager.render_text("Player 2 Wins", Point::new(640, 360), font, 144, &self.canvas, Color::WHITE);
+        }
+        else {
+            let pos_p1 = Point::new(540, 100);
+            let pos_p2 = Point::new(740, 100);
+    
+            font_manager.render_text(&self.score_p1.to_string(), pos_p1, font, 144, &self.canvas, Color::WHITE);
+            font_manager.render_text(&self.score_p2.to_string(), pos_p2, font, 144, &self.canvas, Color::WHITE);
+        }
     }
 }
 
@@ -332,7 +341,7 @@ impl System for SysPaddleMovement {
             self.move_paddle(id, delta_time);
         }
     }
-} 
+}
 
 impl System for SysRenderTexture {
     fn execute(&mut self, _delta_time: f32) {

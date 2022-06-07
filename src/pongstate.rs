@@ -14,16 +14,14 @@ pub struct PongState<'a> {
     paddle_move_system: SysPaddleMovement,
     scoring_system: SysScoring<'a>,
     canvas: CanvasRc,
-    event_runner: EventRc,
-    play: PlayRc,
+    event_runner: EventRc
 }
 
 impl<'ttf> PongState<'ttf> {
     pub fn new(
             canvas: &CanvasRc,
             event_runner: &EventRc,
-            font_manager: &FontRc<'ttf>,
-            play: &PlayRc) -> Self {
+            font_manager: &FontRc<'ttf>) -> Self {
         let cmanager: CManagerRc = util::create_component_manager();
 
         let srender = SysRenderTexture::new(&cmanager, canvas);
@@ -42,7 +40,6 @@ impl<'ttf> PongState<'ttf> {
             scoring_system: sscoring,
             canvas: Rc::clone(canvas),
             event_runner: Rc::clone(event_runner),
-            play: Rc::clone(play),
         }
     }
 }
@@ -53,8 +50,7 @@ impl PongState<'_> {
             match event {
                 Event::Quit {..} |
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                    let play = &mut *self.play.borrow_mut();
-                    *play = false;
+                    util::change_gamestate(GameStates::MainMenu);
                 },
                 Event::KeyDown { keycode: Some(Keycode::P), .. } => {
                     util::change_gamestate(GameStates::MainMenu);
